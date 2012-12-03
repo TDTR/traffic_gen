@@ -118,9 +118,19 @@ class socket_thread(threading.Thread):
         self.host_ip = int(src)
         self.pod = int(k)
 
+    
     def run(self):
+        def connection(socket,host,port):
+            try:
+                socket.connect((host,port))
+                return socket
+            except IOError, e:
+                if e.errno == 101:
+                    time.sleep(5)
+                    connection(socket,host,port)
+                    
         logging.debug("%s Start." % self.getName() )
-        _sec = random.expovariate(0.1609)
+        _sec = random.expovariate(0.1609) * 10
         # select host
         if self.host_ip == 0:
             host = 'localhost'
@@ -129,7 +139,8 @@ class socket_thread(threading.Thread):
             
         port = 15000
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((host,port))
+        connection(s,host,port)
+                        
         logging.debug('connection of %s will continue %s sec' % (host,_sec))
 
         d1 = datetime.datetime.now()
@@ -148,7 +159,8 @@ class socket_thread(threading.Thread):
                 break
         self.i += 1
         #s = None
-
+    
+        
 def main():
     argvs = sys.argv
     argc = len(argvs)
@@ -166,7 +178,7 @@ def main():
         # ソケット通信スレッド生成
         t = socket_thread(argvs[1],argvs[2])
         t.start()
-        time.sleep(stop_time)
+        time.sleep(stop_time*10)
         logging.debug('sleep Zzzz.....%s sec' % stop_time)
         
 if __name__ == '__main__':

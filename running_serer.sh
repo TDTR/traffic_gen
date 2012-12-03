@@ -1,2 +1,2 @@
 #! /bin/sh
-python ./threadserver.py &
+python ./threadserver.py

@@ -21,7 +21,8 @@ def threadfunc(sock):
         if rcvmsg =='':
             break
         else:
-            print '%s received -> %s' %(threading.currentThread().getName(), rcvmsg)
+            #print '%s received -> %s' %(threading.currentThread().getName(), rcvmsg)
+            continue
     sock.close()
     print '%s is terminated!' % (threading.currentThread().getName())
 
